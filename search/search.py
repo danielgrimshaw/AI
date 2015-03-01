@@ -84,40 +84,67 @@ def depthFirstSearch(problem):
     """
     #print "Start:", problem.getStartState()
     #print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    #print "Start's successors:", problem.getSuccessors(problem.getStartState())
     "*** YOUR CODE HERE ***"
     closed = set()
-    acts = []
-    fringe = util.Stack()
-    dataFringe = util.Stack()
-    fringe.push(problem.getStartState())
-    dataFringe.push('Stop') # Filler data
+    fringe = util.Stack() # LIFO
+    fringe.push([problem.getStartState(), ['Stop']]) # [Current State, Path]
     while True:
         if fringe.isEmpty():
             return []
+        
         node = fringe.pop()
-        acts.append(dataFringe.pop())
-        if problem.isGoalState(node):
-            return acts
-        add = problem.getSuccessors(node)
-        if (node in closed) or (len(add) == 1 and add[0][0] in closed):
-            acts = acts[:-1]
-        if not (node in closed):
-            closed.add(node)
-            for child in add:
-                fringe.push(child[0])
-                dataFringe.push(child[1])
-    #util.raiseNotDefined()
+        
+        if problem.isGoalState(node[0]):
+            return node[1][1:]
+            
+        if not (node[0] in closed):
+            closed.add(node[0])
+            newNodes = problem.getSuccessors(node[0])
+            for child in newNodes:
+                fringe.push([child[0], node[1] + [child[1]]])
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    closed = set()
+    fringe = util.Queue() # FIFO
+    fringe.push([problem.getStartState(), ['Stop']]) # [Current State, Path]
+    while True:
+        if fringe.isEmpty():
+            return []
+        
+        node = fringe.pop()
+        
+        if problem.isGoalState(node[0]):
+            return node[1][1:]
+            
+        if not (node[0] in closed):
+            closed.add(node[0])
+            newNodes = problem.getSuccessors(node[0])
+            for child in newNodes:
+                fringe.push([child[0], node[1] + [child[1]]])
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    closed = set()
+    fringe = util.PriorityQueue()
+    fringe.push([problem.getStartState(), ['Stop'], 0], 0) # [Current State, Path]
+    while True:
+        if fringe.isEmpty():
+            return []
+        
+        node = fringe.pop()
+        
+        if problem.isGoalState(node[0]):
+            return node[1][1:]
+            
+        if not (node[0] in closed):
+            closed.add(node[0])
+            newNodes = problem.getSuccessors(node[0])
+            for child in newNodes:
+                fringe.push([child[0], node[1] + [child[1]], node[2] + child[2]], node[2] + child[2])
 
 def nullHeuristic(state, problem=None):
     """
@@ -129,8 +156,23 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
+    closed = set()
+    fringe = util.PriorityQueue()
+    fringe.push([problem.getStartState(), ['Stop'], 0], 0) # [Current State, Path]
+    while True:
+        if fringe.isEmpty():
+            return []
+        
+        node = fringe.pop()
+        
+        if problem.isGoalState(node[0]):
+            return node[1][1:]
+            
+        if not (node[0] in closed):
+            closed.add(node[0])
+            newNodes = problem.getSuccessors(node[0])
+            for child in newNodes:
+                fringe.push([child[0], node[1] + [child[1]], node[2] + child[2]], node[2] + child[2] + heuristic(child[0], problem))
 
 # Abbreviations
 bfs = breadthFirstSearch

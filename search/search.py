@@ -82,23 +82,31 @@ def depthFirstSearch(problem):
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
     """
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+    #print "Start:", problem.getStartState()
+    #print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     "*** YOUR CODE HERE ***"
-    closed = []
-    fringe = Stack()
+    closed = set()
+    acts = []
+    fringe = util.Stack()
+    dataFringe = util.Stack()
     fringe.push(problem.getStartState())
-    while not fringe.isEmpty():
+    dataFringe.push('Stop') # Filler data
+    while True:
+        if fringe.isEmpty():
+            return []
         node = fringe.pop()
+        acts.append(dataFringe.pop())
         if problem.isGoalState(node):
-            return node
-        if node not in closed:
+            return acts
+        add = problem.getSuccessors(node)
+        if (node in closed) or (len(add) == 1 and add[0][0] in closed):
+            acts = acts[:-1]
+        if not (node in closed):
             closed.add(node)
-            for child in problem.getSuccessors(node):
-                fringe.push(child)
-    return False
-    
+            for child in add:
+                fringe.push(child[0])
+                dataFringe.push(child[1])
     #util.raiseNotDefined()
 
 def breadthFirstSearch(problem):

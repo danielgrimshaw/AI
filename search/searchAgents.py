@@ -507,9 +507,14 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        closest = food[0]
+        closest = startPosition
+        closestDist = 1000000
         for foods in food:
-            
+            dist = ( (xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2 ) ** 0.5
+            if dist < closestDist:
+                closestDist = dist
+                closest = foods
+        return search.ucs(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
